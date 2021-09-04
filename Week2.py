@@ -18,44 +18,45 @@ def A_star_Traversal(cost, heuristic, start_point, goals):
     Returns:
         path: path to goal state obtained from A*(list of ints)
     """
-
+    INF = 10000000000000000000000000000000000000000000000000000
     path = []
 
     # TODO
     priority = queue.PriorityQueue()
-    priority.put((heuristic[start_point], ([start_point], start_point, 0)))
-
+    priority.put((0, start_point))
+    minimum_cost = [INF for i in range(len(cost))]
+    parents = {start_point: start_point}
+    vis = set()
     while(priority.qsize()):
-        cost2, nodes = priority.get()
-        path = nodes[0]
-        curr = nodes[1]
-        nodeCost = nodes[2]
-
-    n = len(cost)
-    visited = [0 for i in range(n)]
-
-    parents = {}
-
-    if visited[curr] == 0:
-        visited[curr] = 1
-    elif curr in goals:
-        path = [curr]
-        if start_point == curr:
-            return path
-        node1 = curr
-        while not node1 == start_point:
-            node1 = parents[node1]
-            path.insert(0, node1)
-        return path
-
-    for next in range(1, len(cost[curr])):
-        if cost[curr][next] > 0 and visited[next] == 0:
+        t = priority.get()
+        node = t[1]
+        if node in vis:
             continue
-        total = nodeCost + cost[curr][next]
-        cost2 = total + heuristic[next]
-        # path.append(next)
-        parents[next] = curr
-        priority.put((cost2, (path, next, total)))
+
+
+        if node in goals:
+            path = [start_point]
+            if start_point == node:
+                return path
+            path = [node]
+            node1 = node
+            while not node1 == start_point:
+                node1 = parents[node1]
+                path.insert(0, node1)
+            return path
+
+        vis.add(node)
+
+        for child in range(1, len(cost[node])):
+            if cost[node][child] in [0, -1] or child in vis:
+                continue
+
+            temp_total = cost[node][child] + minimum_cost[node]
+            if minimum_cost[child] == INF or temp_total <= minimum_cost[child]:
+                minimum_cost[child] = temp_total
+                parents[child] = node
+
+            priority.put((minimum_cost[child] + (0 if child >= len(heuristic) else heuristic[child]), child))
 
     # DONE
 
