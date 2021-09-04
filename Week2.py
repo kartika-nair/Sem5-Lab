@@ -34,17 +34,28 @@ def A_star_Traversal(cost, heuristic, start_point, goals):
     n = len(cost)
     visited = [0 for i in range(n)]
 
+    parents = {}
+
     if visited[curr] == 0:
         visited[curr] = 1
-    if curr in goals:
+    elif curr in goals:
+        path = [curr]
+        if start_point == curr:
+            return path
+        node1 = curr
+        while not node1 == start_point:
+            node1 = parents[node1]
+            path.insert(0, node1)
         return path
 
-    for next in range(1, n):
+    for next in range(1, len(cost[curr])):
         if cost[curr][next] > 0 and visited[next] == 0:
-            total = nodeCost + cost[curr][next]
-            cost2 = total + heuristic[next]
-            path.append(next)
-            priority.put((cost2, (path, next, total)))
+            continue
+        total = nodeCost + cost[curr][next]
+        cost2 = total + heuristic[next]
+        # path.append(next)
+        parents[next] = curr
+        priority.put((cost2, (path, next, total)))
 
     # DONE
 
@@ -101,7 +112,6 @@ def DFS_Traversal(cost, start_point, goals):
 
     return path
     
-
 
 '''
 cost = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
