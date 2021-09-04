@@ -70,22 +70,32 @@ def DFS_Traversal(cost, start_point, goals):
 
     n = len(cost)
     visited = [0 for i in range(n)]
-
+    parents = {}
     stack.put((start_point, [start_point]))
 
     while(stack.qsize()):
         node, path = stack.get()
-    if visited[node] == 0:
-        visited[node] = 1
-    if node in goals:
-        return path
 
-    else:
-        for next in range(n-1, 0, -1):
-            if cost[node][next] > 0:
-                if visited[next] == 0:
-                    path.append(next)
-                    stack.put((next, path))
+        if visited[node] == 0:
+            visited[node] = 1
+        else:
+            continue
+        if node in goals:
+            path = [node]
+            if start_point == node:
+                return path
+            cur = node
+            while not cur == start_point:
+                cur = parents[cur]
+                path.insert(0, cur)
+            return path
+
+        else:
+            for i in range(len(cost[node]) - 1, 0, -1):
+                if visited[i] or cost[node][i] in [0, -1]:
+                    continue
+                parents[i] = node
+                stack.put((i, path))
 
     # DONE
 
@@ -93,7 +103,7 @@ def DFS_Traversal(cost, start_point, goals):
     
 
 
-
+'''
 cost = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 5, 9, -1, 6, -1, -1, -1, -1, -1],
             [0, -1, 0, 3, -1, -1, 9, -1, -1, -1, -1],
@@ -109,3 +119,4 @@ heuristic = [0, 5, 7, 3, 4, 6, 0, 0, 6, 5, 0]
 start = 1
 goals = [6, 7, 10]
 print(DFS_Traversal(cost,start, goals))
+'''
