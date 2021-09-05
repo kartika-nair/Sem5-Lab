@@ -11,7 +11,7 @@ def A_star_helper(priority, visited, goals, path, start_point, parents, cost, he
     '''
     HELPER FUNCTION FOR A STAR
     '''
-    
+    path = []
     infinity = sys.maxsize
 
     while(priority.qsize()):
@@ -43,6 +43,7 @@ def A_star_helper(priority, visited, goals, path, start_point, parents, cost, he
                 parents[child] = node
 
             priority.put((minimum_cost[child] + (0 if child >= len(heuristic) else heuristic[child]), child))
+    return path
 
 
 def A_star_Traversal(cost, heuristic, start_point, goals):
@@ -82,7 +83,8 @@ def DFS_helper(stack, path, visited, goals, start_point, parents, cost):
     '''
     HELPER FUNCTION FOR DFS
     '''
-
+    path_main = []
+    path = []
     while(stack.qsize()):
         node, path = stack.get()
 
@@ -106,6 +108,7 @@ def DFS_helper(stack, path, visited, goals, start_point, parents, cost):
                     continue
                 parents[i] = node
                 stack.put((i, path))
+    return path_main
 
 
 def DFS_Traversal(cost, start_point, goals):
