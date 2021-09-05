@@ -10,6 +10,8 @@ def A_star_helper(priority, visited, goals, path, start_point, parents, cost, he
     '''
     HELPER FUNCTION FOR A STAR
     '''
+    
+    infinity = sys.maxsize
 
     while(priority.qsize()):
         t = priority.get()
