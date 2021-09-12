@@ -54,33 +54,14 @@ def get_avg_info_of_attribute(df, attribute):
 
     # TODO
     values = df[attribute].unique()
-    df_row_count = len(df.index)
+    counter = len(df.index)
 
     entropy = 0
-    for value in values:
-        sub_df = df.loc[df[attribute] == value]
-        sub_df_row_count = len(sub_df.index)
-        e = get_entropy_of_dataset(sub_df)
-        entropy +=  ( sub_df_row_count / df_row_count ) * e
-    return entropy
-    
-    entropy = 0
-    attr = df[attribute].unique()
-    vals = df.iloc[:,-1].unique()
-    
-    for i in attr:
-        temp = 0
-        indices = df[df[attribute] == i].index
-        proportion = df[attribute].value_counts()[i]/(len(df.iloc[:,-1]))
-    
-    final_col = []
-    for j in indices:
-        final_col.append(df.iloc[j][df.columns[-1]])
-    for k in vals:
-        p = final_col.count(k)/len(final_col)
-    if(p != 0):
-        temp -= p * np.log2(p)
-        entropy += proportion * temp
+    for i in values:
+        individual = df.loc[df[attribute] == i]
+        attr_counter = len(individual.index)
+        entropy_dataset = get_entropy_of_dataset(individual)
+        entropy +=  (attr_counter/counter) * entropy_dataset
     
     avg_info = abs(entropy)
         
