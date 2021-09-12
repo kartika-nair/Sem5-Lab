@@ -5,7 +5,7 @@ Assume df is a pandas dataframe object of the dataset given
 import numpy as np
 import pandas as pd
 import random
-import math
+# import math
 
 
 def entropy_dataset_helper(arr, entropy):   
