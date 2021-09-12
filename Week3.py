@@ -8,6 +8,13 @@ import random
 import math
 
 
+def entropy_dataset_helper(arr, entropy):	
+    for i in arr:
+        p = i/(sum(arr))
+        entropy += (-1) * p * np.log2(p)
+    return entropy
+    
+
 '''Calculate the entropy of the enitre dataset'''
 # input:pandas_dataframe
 # output:int/float
@@ -15,37 +22,29 @@ def get_entropy_of_dataset(df):
 
     # TODO
     
-    targetValues = df[df.columns[-1]].values
-    valueCounter = dict()
+    df.dropna(axis = 0)
     
-    for value in targetValues:
-        if value not in ValueCounter.keys():
-            valueCounter[value] = 1
-        else
-            valueCounter[value] += 1
+    cols = list(df.columns)
+    str = cols[-1]
+    values_under_attribute = df[str].tolist()
     
-    targets = list(valueCounter.values())
     entropy = 0
+    counterDictionary = dict()
     
-    for value in targets:
-        prop = value/(sum(targets))
-        entropy += (-1)*prop*math.log(prop,2)
+    for i in values_under_attribute:
+        if i not in counterDictionary.keys():
+            counterDictionary[i] = 1
+        else:
+            counterDictionary[i] += 1
+    
+    arr = list(counterDictionary.values())
+    entropy = entropy_dataset_helper(arr, entropy)
     
     # DONE
     
-    return entropy
-    
-
-def get_entropy_of_value(dic):
-    targets = list(dic.values())
-    entropy = 0
-	
-    for value in targets:
-        prop = value/(sum(targets))
-        entropy += (-1)*prop*math.log(prop,2)
+    # print(entropy)
     
     return entropy
-		
 
 
 '''Return avg_info of the attribute provided as parameter'''
@@ -55,32 +54,30 @@ def get_avg_info_of_attribute(df, attribute):
 
     # TODO
     
-    targetValues = list[df[df.columns[-1]].values]
-    attrValues = list[df[attribute].values]
+    entropy = 0
+    attr = df[attribute].unique()
+    vals = df.iloc[:,-1].unique()
     
-    valueCounter = dict()
-    total = len(attrValues)
+    for i in attr:
+        temp = 0
+        indices = df[df[attribute] == i].index
+        proportion = df[attribute].value_counts()[i]/(len(df.iloc[:,-1]))
+    final_col = []
+    for j in indices:
+        final_col.append(df.iloc[j][df.columns[-1]])
+    for k in vals:
+        p = final_col.count(k)/len(final_col)
+    if(p != 0):
+        temp -= p * np.log2(p)
+        entropy += proportion * temp
     
-    for value in range(len(attrValues)):
-        if attrValues[value] not in valueCounter.keys():
-            valueCounter[attrValues[value]] = dict()
-            if targetValues[value] not in valuecounter[attrValues[value]].keys():
-                valueCounter[attrValues[value]][targetValues[value]] = 1
-            else:
-                valueCounter[attrValues[value]][targetValues[value]] += 1
-        else:
-            if targetValues[value] not in valuecounter[attrValues[value]].keys():
-                valueCounter[attrValues[value]][targetValues[value]] = 1
-            else:
-                valueCounter[attrValues[value]][targetValues[value]] += 1
-    
-    avg_info = 0
-    for value in valueCounter:
-        avg_info += (sum(valueCounter.values()/total) * get_entropy_of_value(valueCounter[value])
-    
-    # DONE
+    avg_info = abs(entropy)
+        
+    # print(avg_info)
     
     return avg_info
+    
+    # DONE
 
 
 '''Return Information Gain of the attribute provided as parameter'''
@@ -90,9 +87,11 @@ def get_information_gain(df, attribute):
     
     # TODO
     
-    information_gain = get_entropy_of_dataset(df) - get_avg_info_of_attribute(df, attribute)
+    information_gain = abs(get_entropy_of_dataset(df) - get_avg_info_of_attribute(df, attribute))
         
     # DONE
+    
+    # print(information_gain)
     
     return information_gain
 
@@ -109,17 +108,33 @@ def get_selected_attribute(df):
     
     # TODO
     
-    df_ig = dict()
-    selected = df.columns[0]
+    dictionary_final = dict()
+    col = df.columns[0]
     
-    for col in df.columns[:-1]:
-        if col not in df_ig.keys():
-            df_ig[col] = get_information_gain(df, col)
-            if df_if(col) > df_ig(selected):
-                selected = col
+    for i in df.columns[:-1]:
+        if i not in dictionary_final.keys():
+            dictionary_final[i] = get_information_gain(df, i)
+        if dictionary_final[i] > dictionary_final[col]:
+            col = i
     
-    return(df_ig, selected)
+    # print(dictionary_final, col)
+    
+    return(dictionary_final, col)
     
     # DONE
-    
-    pass
+
+
+'''
+outlook = 'overcast,overcast,overcast,overcast,rainy,rainy,rainy,rainy,rainy,sunny,sunny,sunny,sunny,sunny'.split(',')
+temp = 'hot,cool,mild,hot,mild,cool,cool,mild,mild,hot,hot,mild,cool,mild'.split(',')
+humidity = 'high,normal,high,normal,high,normal,normal,normal,high,high,high,high,normal,normal'.split(',')
+windy = 'FALSE,TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,TRUE,FALSE,FALSE,TRUE'.split(',')
+play = 'yes,yes,yes,yes,yes,yes,no,yes,no,no,no,no,yes,yes'.split(',')
+dataset = {'outlook': outlook, 'temp': temp, 'humidity': humidity, 'windy': windy, 'play': play}
+df = pd.DataFrame(dataset, columns=['outlook', 'temp', 'humidity', 'windy', 'play'])
+
+# print(get_entropy_of_dataset(df))
+# print(get_avg_info_of_attribute(df, 'temp'))
+# print(get_information_gain(df, 'temp'))
+# print(get_selected_attribute(df))
+'''
