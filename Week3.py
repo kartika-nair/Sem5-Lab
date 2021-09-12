@@ -8,7 +8,7 @@ import random
 import math
 
 
-def entropy_dataset_helper(arr, entropy):	
+def entropy_dataset_helper(arr, entropy):   
     for i in arr:
         p = i/(sum(arr))
         entropy += (-1) * p * np.log2(p)
@@ -53,6 +53,16 @@ def get_entropy_of_dataset(df):
 def get_avg_info_of_attribute(df, attribute):
 
     # TODO
+    values = df[attribute].unique()
+    df_row_count = len(df.index)
+
+    entropy = 0
+    for value in values:
+        sub_df = df.loc[df[attribute] == value]
+        sub_df_row_count = len(sub_df.index)
+        e = get_entropy_of_dataset(sub_df)
+        entropy +=  ( sub_df_row_count / df_row_count ) * e
+    return entropy
     
     entropy = 0
     attr = df[attribute].unique()
@@ -62,6 +72,7 @@ def get_avg_info_of_attribute(df, attribute):
         temp = 0
         indices = df[df[attribute] == i].index
         proportion = df[attribute].value_counts()[i]/(len(df.iloc[:,-1]))
+    
     final_col = []
     for j in indices:
         final_col.append(df.iloc[j][df.columns[-1]])
@@ -102,7 +113,6 @@ def get_selected_attribute(df):
     '''
     Return a tuple with the first element as a dictionary which has IG of all columns 
     and the second element as a string with the name of the column selected
-
     example : ({'A':0.123,'B':0.768,'C':1.23} , 'C')
     '''
     
@@ -132,7 +142,6 @@ windy = 'FALSE,TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,TRUE,FALSE,FALS
 play = 'yes,yes,yes,yes,yes,yes,no,yes,no,no,no,no,yes,yes'.split(',')
 dataset = {'outlook': outlook, 'temp': temp, 'humidity': humidity, 'windy': windy, 'play': play}
 df = pd.DataFrame(dataset, columns=['outlook', 'temp', 'humidity', 'windy', 'play'])
-
 # print(get_entropy_of_dataset(df))
 # print(get_avg_info_of_attribute(df, 'temp'))
 # print(get_information_gain(df, 'temp'))
