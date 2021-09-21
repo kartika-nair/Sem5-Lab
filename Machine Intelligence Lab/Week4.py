@@ -34,6 +34,19 @@ class KNN:
 
         return self
 
+    def p_root(value, root):
+     
+        root_value = 1 / float(root)
+        return round (Decimal(value) **
+                 Decimal(root_value), 3)
+ 
+    def minkowski_distance(x, y, p_value):
+     
+    # pass the p_root function to calculate
+    # all the value of vector parallelly
+        return (p_root(sum(pow(abs(a-b), p_value) for a, b in zip(x, y)), p_value))
+
+
     def find_distance(self, x):
         """
         Find the Minkowski distance to all the points in the train dataset x
@@ -45,13 +58,12 @@ class KNN:
         """
         # TODO
         
-        sum_213 = 0
+        dist_213 = [[0 for i in range(len(self.target))] for j in range(len(x))]
         
-        for i in range(self.target):
-            sum_213 += (abs(x[0,i] - self.data[0,i]) ** self.p)
-        
-        final_213 = sum_213 ** (1/(self.p))
-        return final_213
+        for i in range(len(x)):
+            for j in range(len(self.data)):
+                dist_213[i][j] = minkowski_distance(x[i],data[j])
+            
         
         # pass
         # DONE
@@ -66,7 +78,6 @@ class KNN:
             k nearest neighbours as a list of (neigh_dists, idx_of_neigh)
             neigh_dists -> N x k Matrix(float) - Dist of all input points to its k closest neighbours.
             idx_of_neigh -> N x k Matrix(int) - The (row index in the dataset) of the k closest neighbours of each input
-
             Note that each row of both neigh_dists and idx_of_neigh must be SORTED in increasing order of distance
         """
         # TODO
@@ -159,7 +170,6 @@ def test_case2():
        [0.25709202, 0.06937377, 0.92718944, 0.54662592, 1],
        [0.07637632, 0.3176806 , 0.74102328, 0.32849423, 1],
        [0.2334587 , 0.67725537, 0.4323325 , 0.38766629, 0]])
-
     X_train = data[:, :4]
     y_train = data[:, 4]
     samples = np.array([[0.41361609, 0.45603303, 0.33195254, 0.09371524, 1],
@@ -172,7 +182,6 @@ def test_case2():
     kneigh_dist = np.array([[0, 0.87960746, 0.91697707], [0, 0.72497042, 1.01071404]])
     kneigh_idx = np.array([[0, 4, 2], [1, 3, 0]])
     pred = np.array([0, 1, 0, 0, 0])
-
     model = KNN(k_neigh = 3, p = 1, weighted=True)
     model.fit(X_train, y_train)
     try:
@@ -181,21 +190,18 @@ def test_case2():
         print("Test Case 1 for the function k_neighbours (distance) PASSED")
     except:
         print("Test Case 1 for the function k_neighbours (distance) FAILED")
-
     try:
         np.testing.assert_array_equal(
             model.k_neighbours(X_train[0:2, :])[1], kneigh_idx)
         print("Test Case 2 for the function k_neighbours (idx) PASSED")
     except:
         print("Test Case 2 for the function k_neighbours (idx) FAILED")
-
     try:
         np.testing.assert_array_equal(
             model.predict(X_test), pred)
         print("Test Case 3 for the function predict PASSED")
     except:
         print("Test Case 3 for the function predict FAILED")
-
     try:
         assert model.evaluate(X_test, y_test) == 60
         print("Test Case 4 for the function evaluate PASSED")
@@ -204,5 +210,4 @@ def test_case2():
         
         
 test_case2()
-
 '''
