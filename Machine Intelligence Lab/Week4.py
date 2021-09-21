@@ -1,5 +1,5 @@
 import numpy as np
-
+# from decimal import Decimal
 
 class KNN:
     """
@@ -34,17 +34,16 @@ class KNN:
 
         return self
 
-    def p_root(value, root):
+    def p_root(self, value, root):
      
         root_value = 1 / float(root)
-        return round (Decimal(value) **
-                 Decimal(root_value), 3)
+        return round (float(value) ** float(root_value), 3)
  
-    def minkowski_distance(x, y, p_value):
+    def minkowski_distance(self, x, y, p_value):
      
     # pass the p_root function to calculate
     # all the value of vector parallelly
-        return (p_root(sum(pow(abs(a-b), p_value) for a, b in zip(x, y)), p_value))
+        return (self.p_root(sum(pow(abs(a-b), p_value) for a, b in zip(x, y)), p_value))
 
 
     def find_distance(self, x):
@@ -62,7 +61,10 @@ class KNN:
         
         for i in range(len(x)):
             for j in range(len(self.data)):
-                dist_213[i][j] = minkowski_distance(x[i],data[j])
+                dist_213[i][j] = self.minkowski_distance(x[i],self.data[j], self.p)
+        
+        # print(dist_213)        
+        return dist_213
             
         
         # pass
@@ -86,12 +88,13 @@ class KNN:
         
         len_213 = self.data.shape[0]
         for i in range(len_213):
-            j = {'dist':self.find_distance(self.data[i], x), 'id':i}
+            j = {'dist':self.find_distance(x), 'id':i}
             dist_arr_213.append(j)
         
         sort_213 = sorted(dist_arr_213, key = lambda i : i['dist'])
         final_213 = sort_213[0:self.k_neigh]
         
+        print(final_213)
         return final_213
         
         # pass
@@ -188,13 +191,16 @@ def test_case1():
     sample = np.array([[2.6, 3.4], [5.2, 4.33]])
 
     pred = np.array([0, 0])
+    model.find_distance(X[0:2, :])
     try:
+        model.find_distance(X[0:2, :])
         np.testing.assert_array_almost_equal(
             model.find_distance(X[0:2, :]), dist, decimal=2)
         print("Test Case 1 for the function find_distance PASSED")
     except:
         print("Test Case 1 for the function find_distance FAILED")
 
+    model.k_neighbours(X[0:2, :])[0]
     try:
         np.testing.assert_array_almost_equal(
             model.k_neighbours(X[0:2, :])[0], kneigh_dist, decimal=2)
