@@ -84,19 +84,27 @@ class KNN:
         """
         # TODO
         
-        dist_arr_213 = []
-        
-        len_213 = self.data.shape[0]
-        for i in range(len_213):
-            j = {'dist':self.find_distance(x), 'id':i}
-            dist_arr_213.append(j)
-        
-        sort_213 = sorted(dist_arr_213, key = lambda i : i['dist'])
-        final_213 = sort_213[0:self.k_neigh]
-        
-        print(final_213)
-        return final_213
-        
+        dist_without_index = self.find_distance(x)
+        dist_with_index = []
+        for i in range(len(dist_without_index)):
+            what_do_i_name_this = []
+            for j in range(len(dist_without_index[0])):
+                what_do_i_name_this.append((dist_without_index[i][j], j))
+
+            what_do_i_name_this.sort()
+            dist_with_index.append(what_do_i_name_this[:self.k_neigh])
+        neigh_dists = []
+        idx_of_neigh = []
+        for i in dist_with_index:
+            what_do_i_name_this2 = []
+            what_do_i_name_this3 = []
+            for j in i:
+                what_do_i_name_this2.append(j[0])
+                what_do_i_name_this3.append(j[1])
+            neigh_dists.append(what_do_i_name_this2)
+            idx_of_neigh.append(what_do_i_name_this3)
+        return (neigh_dists, idx_of_neigh)
+
         # pass
         # DONE
 
@@ -109,24 +117,35 @@ class KNN:
             pred: Vector of length N (Predicted target value for each input)(int)
         """
         # TODO
-        
-        pred_213 = np.array([])
-        
-        for i in x:
-            neigh_213 = self.k_neighbours(i)
-            
-            dict_213 = {}
-            for n_213 in neigh_213:
-                class_213 = int(self.data[n_213['y']])
-                if str(class_213) not in dict_213:
-                    dict_213[str(class_213)] = 1
+
+        neigh_dists, idx_of_neigh = self.k_neighbours(x)
+        hello = []
+        aaa = []
+        for i in range(len(neigh_dists)):
+            aaaa = []
+            for j in range(len(neigh_dists[i])):
+                aaaa.append((neigh_dists[i][j], idx_of_neigh[i][j]))
+            aaa.append(aaaa)
+        # print(aaa)
+        for a in aaa:
+            fuck_me = {}
+            for aa in a:
+                aaaaa = self.target[aa[1]]
+                if (self.weighted):
+                    if aaaaa in fuck_me:
+                        fuck_me[aaaaa] += 1/(1e-13 + aa[0])
+                    else:
+                        fuck_me[aaaaa] = 1/(1e-13 + aa[0])
                 else:
-                    dict_213[str(class_213)] += 1
-            val_213 = int(max(dict_213.items()))
-            
-            pred_213 = np.append(pred_213, val_213)
-            
-        return pred_213
+                    if aaaaa in fuck_me:
+                        fuck_me[aaaaa] += 1
+                    else:
+                        fuck_me[aaaaa] = 1
+
+            hello.append(max(fuck_me, key = lambda x: fuck_me[x]))
+        return hello
+
+
         
         # pass
         # DONE
@@ -152,14 +171,14 @@ class KNN:
             if pred_213[i] == y[i]:
                 count_213 += 1
         
-        accuracy_213 = float(count_213/length_213)
+        accuracy_213 = float(count_213/length_213) * 100
         return accuracy_213
         
         # pass
         # DONE
         
 
-
+'''
 def test_case1():
     data = np.array([[2.7810836, 2.550537003, 0],
                  [1.465489372, 2.362125076, 0],
@@ -232,7 +251,7 @@ def test_case1():
 test_case1()  
   
         
-'''        
+        
 def test_case2():
     data = np.array([[0.68043616, 0.39113473, 0.1165562 , 0.70722573, 0],
        [0.67329238, 0.69782966, 0.73278321, 0.78787406, 0],
