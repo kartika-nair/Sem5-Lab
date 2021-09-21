@@ -34,16 +34,15 @@ class KNN:
 
         return self
 
-    def p_root(self, value, root):
-     
-        root_value = 1 / float(root)
-        return round (float(value) ** float(root_value), 3)
  
-    def minkowski_distance(self, x, y, p_value):
-     
-    # pass the p_root function to calculate
-    # all the value of vector parallelly
-        return (self.p_root(sum(pow(abs(a-b), p_value) for a, b in zip(x, y)), p_value))
+    def minkowski_helper(self, x, y, p):
+        sum_213 = 0
+
+        for var1_213, var2_213 in zip(x,y):
+            sum_213 = sum_213 + pow(abs(var1_213 - var2_213), p)
+
+        root_213 = 1/float(p)
+        return round (float(sum_213) ** float(root_213), 3)
 
 
     def find_distance(self, x):
@@ -61,11 +60,10 @@ class KNN:
         
         for i in range(len(x)):
             for j in range(len(self.data)):
-                dist_213[i][j] = self.minkowski_distance(x[i],self.data[j], self.p)
+                dist_213[i][j] = self.minkowski_helper(x[i],self.data[j], self.p)
         
         # print(dist_213)        
         return dist_213
-            
         
         # pass
         # DONE
@@ -84,29 +82,39 @@ class KNN:
         """
         # TODO
         
-        dist_without_index = self.find_distance(x)
-        dist_with_index = []
-        for i in range(len(dist_without_index)):
-            what_do_i_name_this = []
-            for j in range(len(dist_without_index[0])):
-                what_do_i_name_this.append((dist_without_index[i][j], j))
+        indexed_213 = []
 
-            what_do_i_name_this.sort()
-            dist_with_index.append(what_do_i_name_this[:self.k_neigh])
-        neigh_dists = []
-        idx_of_neigh = []
-        for i in dist_with_index:
-            what_do_i_name_this2 = []
-            what_do_i_name_this3 = []
+        dist_213 = self.find_distance(x)
+
+        for i in range(len(dist_213)):
+            arr_213 = []
+
+            for j in range(len(dist_213[0])):
+                arr_213.append((dist_213[i][j], j))
+
+            arr_213.sort()
+            indexed_213.append(arr_213[:self.k_neigh])
+
+        neigh_dists_213 = []
+        idx_of_neigh_213 = []
+
+        for i in indexed_213:
+            temp1_213 = []
+            temp2_213 = []
+
             for j in i:
-                what_do_i_name_this2.append(j[0])
-                what_do_i_name_this3.append(j[1])
-            neigh_dists.append(what_do_i_name_this2)
-            idx_of_neigh.append(what_do_i_name_this3)
-        return (neigh_dists, idx_of_neigh)
+                temp1_213.append(j[0])
+                temp2_213.append(j[1])
+
+            neigh_dists_213.append(temp1_213)
+            idx_of_neigh_213.append(temp2_213)
+
+
+        return (neigh_dists_213, idx_of_neigh_213)
 
         # pass
         # DONE
+
 
     def predict(self, x):
         """
@@ -118,34 +126,39 @@ class KNN:
         """
         # TODO
 
-        neigh_dists, idx_of_neigh = self.k_neighbours(x)
-        hello = []
-        aaa = []
-        for i in range(len(neigh_dists)):
-            aaaa = []
-            for j in range(len(neigh_dists[i])):
-                aaaa.append((neigh_dists[i][j], idx_of_neigh[i][j]))
-            aaa.append(aaaa)
-        # print(aaa)
-        for a in aaa:
-            fuck_me = {}
-            for aa in a:
-                aaaaa = self.target[aa[1]]
+        vector_213 = []
+        temp_213 = []
+
+        neigh_dists_213, idx_of_neigh_213 = self.k_neighbours(x)
+
+        for i in range(len(neigh_dists_213)):
+            arr_213 = []
+            for j in range(len(neigh_dists_213[i])):
+                arr_213.append((neigh_dists_213[i][j], idx_of_neigh_213[i][j]))
+            temp_213.append(arr_213)
+        # print(temp_213)
+
+        for var_213 in temp_213:
+            dict_213 = {}
+            
+            for tempvar_213 in var_213:
+                targets_213 = self.target[tempvar_213[1]]
+                
                 if (self.weighted):
-                    if aaaaa in fuck_me:
-                        fuck_me[aaaaa] += 1/(1e-13 + aa[0])
+                    if targets_213 not in dict_213:
+                        dict_213[targets_213] = 1/(1e-13 + tempvar_213[0])
                     else:
-                        fuck_me[aaaaa] = 1/(1e-13 + aa[0])
+                        dict_213[targets_213] += 1/(1e-13 + tempvar_213[0])
                 else:
-                    if aaaaa in fuck_me:
-                        fuck_me[aaaaa] += 1
+                    if targets_213 not in dict_213:
+                        dict_213[targets_213] = 1
                     else:
-                        fuck_me[aaaaa] = 1
+                        dict_213[targets_213] += 1
 
-            hello.append(max(fuck_me, key = lambda x: fuck_me[x]))
-        return hello
+            vector_213.append(max(dict_213, key = lambda x: dict_213[x]))
+        
 
-
+        return vector_213
         
         # pass
         # DONE
