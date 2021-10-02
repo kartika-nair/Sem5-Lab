@@ -7,6 +7,7 @@ Codes and PDFs submitted for the laboratory courses in Semester 5 at PES Univers
 - Week 2: Neo4j
 - Week 3: ER Diagram and SQL Insertion
 - Week 4: SQL Constraints
+- Week 5: SQL DML and Transactions
 
 ## MI Lab (UE19CS305)
 - Week 1: NumPy and Pandas
