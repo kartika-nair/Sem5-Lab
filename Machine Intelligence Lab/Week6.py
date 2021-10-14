@@ -33,4 +33,29 @@ class SVM:
         """
 
         # TODO
-        pass
+        
+        pipe_213 = Pipeline([('scaler', StandardScaler()), ('svc', SVC())])
+        pipe_213.fit(self.X, self.y)
+        
+        # print(self.X)
+        # print(self.y)
+        
+        return pipe_213
+        
+        # DONE
+        
+
+'''
+import sys
+import importlib        
+
+data = pd.read_csv('test.csv')
+X_test = data.iloc[:, 0:-1]
+y_test = data.iloc[:, -1]
+
+try:
+    model = SVM('train.csv').solve()
+    print(f'Accuracy: {model.score(X_test, y_test)*100:.2f}%')
+except Exception as e:
+    print(f'Failed {e}')
+'''
