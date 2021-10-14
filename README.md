@@ -8,6 +8,7 @@ Codes and PDFs submitted for the laboratory courses in Semester 5 at PES Univers
 - Week 3: ER Diagram and SQL Insertion
 - Week 4: SQL Constraints
 - Week 5: SQL DML and Transactions
+- Week 6: Aggregate Functions
 
 ## MI Lab (UE19CS305)
 - Week 1: NumPy and Pandas
@@ -15,3 +16,4 @@ Codes and PDFs submitted for the laboratory courses in Semester 5 at PES Univers
 - Week 3: Information Gain
 - Week 4: KNN Algorithm
 - Week 5: Back Propagation Algorithm
+- Week 6: Support Vector Machines
