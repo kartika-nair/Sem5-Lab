@@ -34,7 +34,7 @@ class SVM:
 
         # TODO
         
-        pipe_213 = Pipeline([('scaler', StandardScaler()), ('svc', SVC())])
+        pipe_213 = Pipeline([('scaler', StandardScaler()), ('norm', Normalizer()), ('svc', SVC())])
         pipe_213.fit(self.X, self.y)
         
         # print(self.X)
