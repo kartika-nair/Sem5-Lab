@@ -9,6 +9,7 @@ Codes and PDFs submitted for the laboratory courses in Semester 5 at PES Univers
 - Week 4: SQL Constraints
 - Week 5: SQL DML and Transactions
 - Week 6: Aggregate Functions
+- Week 7: Set Operations
 
 ## MI Lab (UE19CS305)
 - Week 1: NumPy and Pandas
