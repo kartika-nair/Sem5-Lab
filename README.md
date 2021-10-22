@@ -18,3 +18,4 @@ Codes and PDFs submitted for the laboratory courses in Semester 5 at PES Univers
 - Week 4: KNN Algorithm
 - Week 5: Back Propagation Algorithm
 - Week 6: Support Vector Machines
+- Week 7: AdaBoost
