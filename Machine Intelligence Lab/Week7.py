@@ -54,6 +54,15 @@ class AdaBoost:
 
         return self
 
+    def sumFunc213 (self, sample_weights):
+        n = 0
+        for i in sample_weights:
+                if isinstance(i, list):
+                        n += self.sumFunc213(i)
+                else:
+                        n += i
+        return n
+    
     def stump_error(self, y, y_pred, sample_weights):
         """
         Calculating the stump error
@@ -66,7 +75,11 @@ class AdaBoost:
         """
 
         # TODO
-        pass
+        # pass
+        
+        return (self.sumFunc213(sample_weights*np.where(y_pred!=y,1,0)))/(self.sumFunc213(sample_weights))
+
+        # DONE
 
     def compute_alpha(self, error):
         """
@@ -80,8 +93,30 @@ class AdaBoost:
         """
         eps = 1e-9
         # TODO
-        pass
+        # pass
 
+        return (np.log((1-error)/(eps+error)))/2
+
+        # DONE
+
+    def updateHelper213 (self, y, y_pred, sample_weights, e_213):
+        updated_213 = []
+
+        for i in range(len(sample_weights)):
+                if y[i] == y_pred[i]:
+                        updated_213.append(sample_weights[i]/(2*e_213))
+                else:
+                        updated_213.append(sample_weights[i]/(2*(1-e_213)))
+
+        return updated_213
+    
+    def neqFunc213 (self, y, y_pred):
+        for i in range(len(y)):
+                if isinstance(y[i], list):
+                        return self.neqFunc213(y[i], y_pred[i])
+                else:
+                        return (y[i] != y_pred[i])
+    
     def update_weights(self, y, y_pred, sample_weights, alpha):
         """
         Updating Weights of the samples based on error of current stump
@@ -96,8 +131,19 @@ class AdaBoost:
         """
 
         # TODO
-        pass
+        # pass
 
+        e_213 = 1 - self.stump_error(y, y_pred, sample_weights)
+        if(e_213 == 1):
+                return (sample_weights)*np.exp(alpha*(self.neqFunc213(y, y_pred)).astype(int))
+
+        return self.updateHelper213(y, y_pred, sample_weights, e_213)
+        # DONE
+
+    def predHelper213 (self, X):
+        for stump in range(self.n_stumps):
+                return self.stumps[stump].predict(X)
+    
     def predict(self, X):
         """
         Predicting using AdaBoost model with all the decision stumps.
@@ -108,7 +154,10 @@ class AdaBoost:
             pred: N Vector(Class target predicted for all the inputs as int.)
         """
         # TODO
-        pass
+        # pass
+        return np.sign((np.array([self.predHelper213(X)]))[0])
+
+        # DONE
 
     def evaluate(self, X, y):
         """
