@@ -26,8 +26,16 @@ class HMM:
         Make dictionary mapping between states and indexes
         """
         self.states_dict = dict(zip(self.states, list(range(self.N))))
-        self.emissions_dict = dict(
-            zip(self.emissions, list(range(self.M))))
+        self.emissions_dict = dict(zip(self.emissions, list(range(self.M))))
+
+    def initialisation_213(self, i):
+        pass
+
+    def termination_213(self, i):
+        pass
+
+    def recursion_213(self, i):
+        pass
 
     def viterbi_algorithm(self, seq):
         """
@@ -39,4 +47,17 @@ class HMM:
             hidden_states_sequence: Most likely state sequence 
         """
         # TODO
-        pass
+        
+        hidden_states_sequence_213 = np.zeros(len(seq) + 1)
+
+        for i in len(seq):
+            if (i == 1):
+                hidden_states_sequence_213[i] = initialisation_213(i)
+            elif (i == len(seq)):
+                hidden_states_sequence_213[i] = termination_213(i)
+            else:
+                hidden_states_sequence_213[i] = recursion_213(i)
+
+        return hidden_states_sequence_213[1:]
+
+        # DONE
