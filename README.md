@@ -11,6 +11,7 @@ Codes and PDFs submitted for the laboratory courses in Semester 5 at PES Univers
 - Week 6: Aggregate Functions
 - Week 7: Set Operations
 - Week 8: Joins and Sub-Queries
+- Week 9 & 10: Triggers and Functions
 
 ## MI Lab (UE19CS305)
 - Week 1: NumPy and Pandas
@@ -21,3 +22,4 @@ Codes and PDFs submitted for the laboratory courses in Semester 5 at PES Univers
 - Week 6: Support Vector Machines (SVM)
 - Week 7: AdaBoost
 - Week 8: Hidden Markov Models (HMM)
+- Week 9: K-Means Clustering
