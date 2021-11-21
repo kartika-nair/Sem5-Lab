@@ -68,8 +68,10 @@ class KMeansClustering:
             Cluster assignment of all the samples in the training data
             (M) Vector (M number of samples in the train dataset)(numpy int)
         """
-        #TODO
+        # TODO
         pass
+
+        # DONE
 
     def m_step(self, data, cluster_assgn):
         """
@@ -77,18 +79,24 @@ class KMeansClustering:
         Compute the centroids
         Args:
             data: M x D Matrix(M training samples with D attributes each)(numpy float)
+            cluster_assign: Cluster Assignment
         Change self.centroids
         """
-        #TODO
+        # TODO
         pass
 
-    def evaluate(self, data):
+        # DONE
+
+    def evaluate(self, data, cluster_assign):
         """
         K-Means Objective
         Args:
             data: Test data (M x D) matrix (numpy float)
+            cluster_assign: M vector, Cluster assignment of all the samples in `data`
         Returns:
             metric : (float.)
         """
-        #TODO
+        # TODO
         pass
+
+        # DONE
