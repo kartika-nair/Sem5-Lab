@@ -17,8 +17,7 @@ class KMeansClustering:
         self.delta = delta
 
     def init_centroids(self, data):
-        idx = np.random.choice(
-            data.shape[0], size=self.n_cluster, replace=False)
+        idx = np.random.choice(data.shape[0], size=self.n_cluster, replace=False)
         self.centroids = np.copy(data[idx, :])
 
     def fit(self, data):
@@ -57,6 +56,11 @@ class KMeansClustering:
 
         return self
 
+    def eHelper_213 (self, arr_213, data):
+        for i in range(data.shape[0]):
+            arr_213.append(np.argmin(np.linalg.norm(data[i] - self.centroids, axis=1)))
+        return arr_213
+    
     def e_step(self, data):
         """
         Expectation Step.
@@ -69,10 +73,16 @@ class KMeansClustering:
             (M) Vector (M number of samples in the train dataset)(numpy int)
         """
         # TODO
-        pass
-
+        
+        arr_213 = []
+        arr_213 = self.eHelper_213(arr_213, data)
+        return np.array(arr_213, dtype=int)
+        
         # DONE
 
+    def mHelper_213 (self, data, cluster_assgn, i_213):
+        return np.mean(data[cluster_assgn == i_213], axis=0)
+    
     def m_step(self, data, cluster_assgn):
         """
         Maximization Step.
@@ -83,10 +93,27 @@ class KMeansClustering:
         Change self.centroids
         """
         # TODO
-        pass
-
+        
+        self.centroids = []
+        for i_213 in range(self.n_cluster):
+            self.centroids.append(self.mHelper_213(data, cluster_assgn, i_213))
+        
         # DONE
 
+    def normalised_213 (self, data, cluster_assign, i_213):
+        temp_213 = data[cluster_assign == i_213] - self.centroids[i_213]
+        temp_213 = np.linalg.norm(temp_213)
+        return temp_213
+    
+    def square_213 (self, data, cluster_assign, i_213):
+        return np.square(self.normalised_213(data, cluster_assign, i_213))
+    
+    def metricCalc_213 (self, data, cluster_assign, metric_213):
+        for i_213 in range(self.n_cluster):
+            temp_213 = self.normalised_213(data, cluster_assign, i_213)
+            metric_213 += np.square(temp_213)
+        return metric_213
+    
     def evaluate(self, data, cluster_assign):
         """
         K-Means Objective
@@ -96,7 +123,11 @@ class KMeansClustering:
         Returns:
             metric : (float.)
         """
-        # TODO
-        pass
+        #TODO
+        
+        metric_213 = 0
+        metric_213 = self.metricCalc_213(data, cluster_assign, metric_213)
 
+        return metric_213        
+        
         # DONE
