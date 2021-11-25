@@ -27,26 +27,42 @@ class HMM:
         """
         self.states_dict = dict(zip(self.states, list(range(self.N))))
         self.emissions_dict = dict(zip(self.emissions, list(range(self.M))))
-    
-    
-    def init_213 (self, t):
-        return self.pi[t]
-    
-    def main_init_213 (self, s, t, seq):
-        return self.pi[t] * self.B[self.states_dict[s[t]]][self.emissions_dict[seq[t]]]
-    
-    def rec_213 (self, s, t, seq):
-        if (t == 1):
-            return self.init_213(0) * self.B[self.states_dict[s[0]]][self.emissions_dict[seq[0]]] * self.A[self.states_dict[s[t]]][self.states_dict[s[t-1]]] * self.B[self.states_dict[s[t]]][self.emissions_dict[seq[t]]]
-        
-        else:
-            return self.rec_213(s, t-1, seq) * self.A[self.states_dict[s[t]]][self.states_dict[s[t-1]]] * self.B[self.states_dict[s[t]]][self.emissions_dict[seq[t]]]
-    
-    def product_213(self, *args, reps):
-        result = [[]]
-        for i in [tuple(i) for i in args] * reps: result = [x+[y] for x in result for y in i]
-        for prod in result: yield tuple(prod)
-    
+
+    def init_nu_213 (self, nu_213, seq):
+        for i in range(self.N):
+            nu_213[0, i] = self.pi[i] * self.B[i, self.emissions_dict[seq[0]]]
+        return nu_213
+
+    def nu_rec_213(self, seq, nu_213):
+        for i in range(1, len(seq)):
+            for j in range(self.N):
+                atTimeT_213_max = -1
+                for k in range(self.N): 
+                    if nu_213[i - 1, k] * self.A[k, j] * self.B[j, self.emissions_dict[seq[i]]] > atTimeT_213_max:
+                        atTimeT_213_max = nu_213[i - 1, k] * self.A[k, j] * self.B[j, self.emissions_dict[seq[i]]]
+                nu_213[i, j] = atTimeT_213_max
+        return nu_213
+
+    def maybe_nu_rec_213(self, seq, nu_213, maybe_nu_213):
+        for i in range(1, len(seq)):
+            for j in range(self.N):
+                atTimeT_213_max = -1
+                max_nu_213 = -1
+                for k in range(self.N):
+                    if nu_213[i - 1, k] * self.A[k, j] * self.B[j, self.emissions_dict[seq[i]]] > atTimeT_213_max:
+                        atTimeT_213_max = nu_213[i - 1, k] * self.A[k, j] * self.B[j, self.emissions_dict[seq[i]]]
+                        max_nu_213 = k
+                maybe_nu_213[i, j] = max_nu_213
+        return maybe_nu_213
+
+    def termination_213(self, seq, nu_213, max_nu_213):
+        atTimeT_213_max = -1
+        for i in range(self.N):
+            if nu_213[len(seq) - 1, i] > atTimeT_213_max:
+                atTimeT_213_max = nu_213[len(seq) - 1, i]
+                max_nu_213 = i
+        return max_nu_213
+
     def viterbi_algorithm(self, seq):
         """
         Function implementing the Viterbi algorithm
@@ -56,21 +72,24 @@ class HMM:
             nu: Porbability of the hidden state at time t given an obeservation sequence
             hidden_states_sequence: Most likely state sequence 
         """
-        # TODO
+
+        nu_213 = np.zeros((len(seq), self.N))
+        nu_213 = self.init_nu_213(nu_213, seq)
+
+        maybe_nu_213 = np.zeros((len(seq), self.N), dtype=int)        
+        for i in range(self.N):
+            maybe_nu_213[0, i] = 0
         
-        hidden_states_sequence_213 = []
-        nu_213 = 0
+        nu_213 = self.nu_rec_213(seq, nu_213)
+        maybe_nu_213 = self.maybe_nu_rec_213(seq, nu_213, maybe_nu_213)
+        
+        max_nu_213 = -1
+        max_nu_213 = self.termination_213(seq, nu_213, max_nu_213)
+        st_213 = [max_nu_213]
+        
+        for i in range(len(seq) - 1, 0, -1):
+            st_213.append(maybe_nu_213[i, st_213[-1]])
+        st_213.reverse()
 
-        for s in self.product_213(self.states, reps = len(seq)):
-            maybe_nu_213 = 0
-            for t in range(len(seq)):
-                if (t == 0):
-                    maybe_nu_213 = self.main_init_213(list(s), t, seq)
-                else:
-                    maybe_nu_213 = self.rec_213(list(s), t, seq)
-            if(maybe_nu_213 > nu_213):
-                hidden_states_sequence_213 = list(s)
-                nu_213 = maybe_nu_213
-
-        return hidden_states_sequence_213
-        # DONE
+        hidden_states_sequence = {x : y for y, x in self.states_dict.items()}
+        return [hidden_states_sequence[i] for i in st_213]
